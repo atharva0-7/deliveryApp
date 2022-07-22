@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery/widget/rating_layout.dart';
 
 class ItemLayout extends StatefulWidget {
-  Function incrementCount;
-  Function decrementCount;
-  String title;
-  String description;
-  String imageUrl;
+  final Function incrementCount;
+  final Function decrementCount;
+  final String title;
+  final String description;
+  final String imageUrl;
 
   ItemLayout(this.imageUrl, this.description, this.title, this.decrementCount,
       this.incrementCount);
@@ -71,21 +71,57 @@ class _ItemLayoutState extends State<ItemLayout> {
                         onPressed: () {
                           setState(() {
                             if (colorFlag) {
-                              widget.incrementCount();
+                              if (count == 0) {
+                                widget.incrementCount();
+                              }
+                              count++;
                               colorFlag = false;
                             } else {
-                              widget.decrementCount();
+                              if (count == 0) {
+                                widget.decrementCount();
+                              }
+                              count--;
                               colorFlag = true;
                             }
                           });
                         },
-                        child: colorFlag
-                            ? const Text(
-                                "ADD",
-                                style: TextStyle(color: Colors.red),
-                              )
-                            : const Text("Added",
-                                style: TextStyle(color: Colors.green))),
+                        child: count == 0
+                            ? colorFlag
+                                ? const Text(
+                                    "ADD",
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                                : const Text(
+                                    "Added",
+                                    style: TextStyle(color: Colors.green),
+                                  )
+                            : FittedBox(
+                                child: Row(
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.incrementCount();
+                                            count++;
+                                          });
+                                        },
+                                        child: Icon(Icons.add)),
+                                    Text(
+                                      "$count",
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 25),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.decrementCount();
+                                            count--;
+                                          });
+                                        },
+                                        child: Icon(Icons.remove)),
+                                  ],
+                                ),
+                              )),
                   ),
                 ],
               ),
