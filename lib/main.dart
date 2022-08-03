@@ -1,7 +1,7 @@
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/providers/add_to_cart_provider.dart';
+import 'package:provider/provider.dart';
 import 'Pages/main_page.dart';
 
 void main() {
@@ -11,16 +11,14 @@ void main() {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? CupertinoApp(
-            debugShowCheckedModeBanner: false,
-            title: "Food Delivery",
-            home: MainPage(),
-          )
-        : MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: "Food Delivery",
-            home: MainPage(),
-          );
+   return ChangeNotifierProvider(
+    create:(_)=>AddToCart(),builder: (context, child) => MaterialApp(
+            darkTheme: ThemeData.dark().copyWith(),
+              debugShowCheckedModeBanner: false,
+              title: "Food Delivery",
+              home: MainPage(),
+            ),
+    
+   );
   }
 }

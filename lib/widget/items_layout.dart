@@ -1,27 +1,23 @@
+
 import 'package:flutter/material.dart';
+import 'package:food_delivery/models/item_information.dart';
+import 'package:food_delivery/providers/add_to_cart_provider.dart';
 import 'package:food_delivery/widget/rating_layout.dart';
+import 'package:provider/provider.dart';
 
-class ItemLayout extends StatefulWidget {
-  Function incrementCount;
-  Function decrementCount;
-  String title;
-  String description;
-  String imageUrl;
 
-  ItemLayout(this.imageUrl, this.description, this.title, this.decrementCount,
-      this.incrementCount);
 
-  @override
-  State<ItemLayout> createState() => _ItemLayoutState();
-}
-
-class _ItemLayoutState extends State<ItemLayout> {
-  int count = 0;
-  bool colorFlag = true;
+class ItemLayout extends StatelessWidget {
+  CartItem currItem;
+  ItemLayout(this.currItem);
+ 
+  
   @override
   Widget build(BuildContext context) {
+    
+   
     return Container(
-      decoration: BoxDecoration(border: Border.all(width: 1 / 8)),
+      // decoration: BoxDecoration(border: Border.all(width: 1 / 8)),
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Row(
@@ -32,14 +28,14 @@ class _ItemLayoutState extends State<ItemLayout> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.title,
+                 currItem.title,
                     style: const TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   Text(
-                    widget.description,
+                 currItem.description,
                     style: const TextStyle(color: Colors.grey),
                   ),
                   const RatingBar()
@@ -56,7 +52,7 @@ class _ItemLayoutState extends State<ItemLayout> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image(
-                        image: NetworkImage(widget.imageUrl),
+                        image: NetworkImage(currItem.imageUrl),
                       ),
                     ),
                   ),
@@ -66,26 +62,31 @@ class _ItemLayoutState extends State<ItemLayout> {
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                               width: 1.0,
-                              color: colorFlag ? Colors.red : Colors.green),
+                              color: Provider.of<AddToCart>(context).cartItems.contains(currItem)  && currItem.itemCount != 0 ? Colors.green : Colors.red),
                         ),
                         onPressed: () {
-                          setState(() {
-                            if (colorFlag) {
-                              widget.incrementCount();
-                              colorFlag = false;
-                            } else {
-                              widget.decrementCount();
-                              colorFlag = true;
-                            }
-                          });
+                          //  currItem.itemCount++;
+   
+                         Provider.of<AddToCart>(context,listen: false).cartItems.contains(currItem) && currItem.itemCount == 0?
+                          context.read<AddToCart>().addToCart(currItem,false):
+                          context.read<AddToCart>().addToCart(currItem,true);
                         },
-                        child: colorFlag
+                        child:!Provider.of<AddToCart>(context).cartItems.contains(currItem) || currItem.itemCount == 0
                             ? const Text(
                                 "ADD",
                                 style: TextStyle(color: Colors.red),
                               )
-                            : const Text("Added",
-                                style: TextStyle(color: Colors.green))),
+                            :  FittedBox(
+                              child: Row(children: [
+                                IconButton(onPressed: (){
+                                  Provider.of<AddToCart>(context,listen: false).decrementCartItemCount(currItem);
+                                }, icon:const  Icon(Icons.remove)),
+                                Text(currItem.itemCount.toString(),style: const TextStyle(fontSize: 20),),
+                                 IconButton(onPressed: (){
+                                  Provider.of<AddToCart>(context,listen: false).incrementCartItemCount(currItem);
+                                 }, icon: const Icon(Icons.add))
+                              ],),
+                            )),
                   ),
                 ],
               ),
@@ -94,5 +95,6 @@ class _ItemLayoutState extends State<ItemLayout> {
         ),
       ),
     );
+   
   }
 }

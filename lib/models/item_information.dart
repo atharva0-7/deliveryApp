@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-class ItemInformation {
+class CartItem {
   String title;
   String description;
   String imageUrl;
+  int itemCount;
 
-  ItemInformation(
-      {required this.title, required this.description, required this.imageUrl});
+  CartItem(
+      {required this.title, required this.description, required this.imageUrl,required this.itemCount});
 }
