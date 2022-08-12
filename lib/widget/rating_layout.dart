@@ -5,7 +5,7 @@ class RatingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 50,
       width: 100,
       child: FittedBox(
